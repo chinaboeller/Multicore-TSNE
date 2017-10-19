@@ -14,21 +14,22 @@ class MyInstall(install):
         if not os.path.exists('multicore_tsne/release'):
             os.makedirs('multicore_tsne/release')
         else:
-            os.system('rm -rf multicore_tsne/release/')
+            os.system('RD /S /Q multicore_tsne/release/')
             os.makedirs('multicore_tsne/release')
 
         os.chdir('multicore_tsne/release/')
-        return_val = os.system('cmake -DCMAKE_BUILD_TYPE=RELEASE ..')
+        return_val = os.system(
+            'cmake -DCMAKE_C_COMPILER="C:/mingw64/bin/gcc.exe" -DCMAKE_CXX_COMPILER="C:/mingw64/bin/g++.exe" -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RELEASE ..')
 
         if return_val != 0:
             print('cannot find cmake')
             exit(-1)
 
-        os.system('make VERBOSE=1')
+        os.system('mingw32-make VERBOSE=1')
         os.chdir('../..')
         print(os.getcwd())
         os.system(
-            'cp multicore_tsne/release/libtsne_multicore.so python/libtsne_multicore.so')
+            'copy multicore_tsne/release/libtsne_multicore.dll python/libtsne_multicore.dll')
         install.run(self)
 
 
@@ -47,7 +48,7 @@ setup(
 
     packages=['MulticoreTSNE'],
     package_dir={'MulticoreTSNE': 'python'},
-    package_data={'MulticoreTSNE': ['multicore_tsne.so']},
+    package_data={'MulticoreTSNE': ['multicore_tsne.dll']},
     include_package_data=True,
 
     cmdclass={"install": MyInstall},
